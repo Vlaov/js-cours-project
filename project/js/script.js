@@ -104,41 +104,48 @@ setClock('.timer', deadline);
 
 
 //modal
-const modalTrigger = document.querySelectorAll('[data-modal]'), //получаем все data атрибуты
-      modal = document.querySelector('.modal'), //модальное окно
-      modalCloseBtn = document.querySelector('[data-close]'); //кнопка закрытия модального окна; получаем по data атрибуту
+const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal');
 
-modalTrigger.forEach(btn => {
-    btn.addEventListener('click', () => {
-        modal.classList.add('show'); //добавляем классс show к элементу modal
-        modal.classList.remove('hide'); //удаляем класс hide у элемента modal
-        document.body.style.overflow = 'hidden'; //убираем возможность скролить основную страницу при открытом модальном окне
-        /*
-         * так же есть вариант использования открытия/закрытия модального окна modal.classList.toggle('show');
-         */
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', openModal);
     });
-});
 
-function closeModal() {
-    modal.classList.add('hide');
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
-}
-
-modalCloseBtn.addEventListener('click', closeModal); //вызываем функцию closeModal
-
-modal.addEventListener('click', (event) => { //закрытие модального окна при клике на серую область
-    if (event.target === modal) { //если "куда кликнул пользователь" является modal - строгое соответствие
-        closeModal();
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
     }
-});
 
-/*Закрытие модального окна при нажатии на клавишу Escape*/
-document.addEventListener('keydown', (event) => {
-    if (event.code === "Escape" && modal.classList.contains('show')) { //если нажата клавиша Escape и модальное окно действительно открыто, то только тогда закрываем его
-        closeModal();
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);
     }
-});
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.getAttribute('data-close') == "") {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === "Escape" && modal.classList.contains('show')) { 
+            closeModal();
+        }
+    });
+
+    const modalTimerId = setTimeout(openModal, 300000);
+    // Изменил значение, чтобы не отвлекало
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+    window.addEventListener('scroll', showModalByScroll);
 
 
 //modal
@@ -150,9 +157,9 @@ function openModal() {
     clearInterval(modalTimerId);
 }
 
-const modalTimerId = setTimeout(() => {
-    openModal();
-}, 15000);
+// const modalTimerId = setTimeout(() => {
+//     openModal();
+// }, 15000);
 
 /*Модальное окно при долистывании пользователем страницы до конца*/
 function showModalByScroll() {
@@ -167,9 +174,8 @@ function showModalByScroll() {
 window.addEventListener('scroll', showModalByScroll);
 
 
-/* Card menu
- * Используем классы для карточек
- */
+// /* Card menu
+//  * Используем классы для карточек
 
 class MenuCard {
     constructor(src, alt, title, descr, price, parentSelector) {
@@ -179,11 +185,11 @@ class MenuCard {
         this.descr = descr;
         this.price = price;
         this.parent = document.querySelector(parentSelector); //получаем родителя который передаем при создании экземпляра класса для того чтобы в этого родителя добавить созданный нами элемент
-        this.transfer = 75;
-        this.changeToRUB();
+        this.transfer = 27;
+        this.changeToUAH();
     }
 
-    changeToRUB() {
+    changeToUAH() {
         this.price = this.price * this.transfer;
     }
 
@@ -213,8 +219,8 @@ new MenuCard(
     "vegy",
     'Меню "Фитнес"',
     'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    90,
-    ".menu .container"
+    9,
+    ".menu__field .container"
 ).render();
 
 new MenuCard(
@@ -222,8 +228,8 @@ new MenuCard(
     "post",
     'Меню "Постное"',
     'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-    140,
-    ".menu .container" // точно указываем в какого родителя добавлять. Есть блок menu, а в нем container 
+    14,
+    ".menu__field .container" // точно указываем в какого родителя добавлять. Есть блок menu, а в нем container 
 ).render();
 
 new MenuCard(
@@ -231,36 +237,10 @@ new MenuCard(
     "elite",
     'Меню “Премиум”',
     'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-    210,
-    ".menu .container"
+    21,
+    ".menu__field .container"
 ).render();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
 
 });
