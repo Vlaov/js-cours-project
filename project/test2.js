@@ -10,4 +10,4 @@ if (current = 'red') {
     
 
   }
-console.log(updateLight("yellow"));
+console.log(updateLight("yellow")); 
